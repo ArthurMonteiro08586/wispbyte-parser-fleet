@@ -1,0 +1,7 @@
+config.json
+deploy_secrets.json
+*.jsonl
+*.session
+__pycache__/
+farm/wispbyte_accounts.jsonl
+*.log

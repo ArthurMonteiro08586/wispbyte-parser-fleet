@@ -1,0 +1,10 @@
+{
+  "tg_bot_token": "PASTE_BOT_TOKEN",
+  "tg_chat_id": -1003927191915,
+  "tg_thread_id": null,
+  "server_label": "wisp-01",
+  "forum_interval_min": 20,
+  "proxy_interval_min": 180,
+  "proxy_sample": 150,
+  "heartbeat_hours": 6
+}
