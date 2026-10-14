@@ -84,6 +84,9 @@ def collect():
 
 
 def run(cfg, send_tg):
+    if not cfg.get("forum_enabled", True):
+        print("forum role disabled on this server", flush=True)
+        return
     first = True
     while True:
         try:

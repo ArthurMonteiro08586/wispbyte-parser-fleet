@@ -49,10 +49,16 @@ def check_one(px, timeout=7):
 
 
 def run(cfg, send_tg):
+    if not cfg.get("proxy_enabled", True):
+        print("proxy role disabled on this server", flush=True)
+        return
+    shard_i = int(cfg.get("proxy_shard_i", 0))
+    shard_n = max(1, int(cfg.get("proxy_shard_n", 1)))
     sample_cap = cfg.get("proxy_sample", 150)
     while True:
         try:
             cands = candidates()
+            cands = cands[shard_i::shard_n]  # disjoint slice per server
             sample = cands[:sample_cap] if cands else []
             live = []
             if sample:

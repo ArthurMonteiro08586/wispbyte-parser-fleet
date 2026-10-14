@@ -134,9 +134,20 @@ def main():
         bank = [r for r in bank if (r.get("server") or {}).get("type") == "python"]
     print("targets:", len(bank))
 
+    # role assignment: server 0 = forum + proxy shard, rest = proxy shards only
+    roles = {}
+    n = len(bank)
+    for i, rec in enumerate(bank):
+        ident = (rec.get("server") or {}).get("identifier")
+        roles[ident] = {"forum_enabled": i == 0, "proxy_enabled": True,
+                        "proxy_shard_i": i, "proxy_shard_n": max(1, n - 1) if n > 1 else 1}
+        # shard slices: forum server takes shard 0 of (n-1)? keep simple: i%n shards over all servers
+        roles[ident]["proxy_shard_i"] = i
+        roles[ident]["proxy_shard_n"] = n
+
     results = []
     with ThreadPoolExecutor(max_workers=a.workers) as ex:
-        futs = [ex.submit(deploy_one, r, cfg, files, not a.no_restart) for r in bank]
+        futs = [ex.submit(deploy_one, r, {**cfg, **roles[(r.get("server") or {}).get("identifier")]}, files, not a.no_restart) for r in bank]
         for f in futs:
             ident, msg = f.result()
             print(ident, "->", msg, flush=True)
